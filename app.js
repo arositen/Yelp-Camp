@@ -24,8 +24,7 @@ const reviewRoutes = require('./routes/reviews.js');
 const userRoutes = require('./routes/users.js');
 const MongoStore = require('connect-mongo');
 
-// const dbUrl = process.env.DB_URL;
-const dbUrl = 'mongodb://127.0.0.1:27017/yelp-camp';
+const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/yelp-camp';
 
 main().catch((err) => {
   console.log('Oh no! There is a Mongo connection error!');
@@ -51,11 +50,13 @@ app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize());
 
+const secret = process.env.SECRET || 'thisshouldbeabettersecret!'
+
 const store = MongoStore.create({
   mongoUrl: dbUrl,
   touchAfter: 24 * 60 * 60,
   crypto: {
-    secret: 'thisshouldbeabettersecret!'
+    secret,
   }
 });
 
